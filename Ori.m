@@ -1,4 +1,7 @@
 function Ori(SubjID,PosID,recording)
+  if SubjID==0
+    Screen('Preference', 'SkipSyncTests', 1);
+  end
 
 if recording==1   
     daq.getDevices   
@@ -38,7 +41,7 @@ repeatTime = 5;
 OriResult = zeros(length(CueNum),repeatTime);       
 OriRTResult = zeros(length(CueNum),repeatTime);  
 OriFTResult = zeros(length(CueNum),repeatTime);  
-
+OriConfiResult=zeros(length(CueNum),repeatTime);
 %%
 Number = repeatTime*ones(1,length(CueNum));
 
@@ -79,9 +82,10 @@ for  itr0 = 1:length(CueNum)
         [RespAng,RT,FT,firstResp,finish] = OriTest(wPtr,OriTargetPos,RotationAngle,OriCuePos,...
             rect,OriTarget,OriCueColor,OriColorList,recording,signalDuratoin,s);  
        
-        [value] = OriFeedBack(wPtr,finish,RespAng,TargetAng,flipInterval,white);        
+        [value,confidence] = OriFeedBack(wPtr,finish,RespAng,TargetAng,flipInterval,white,rect);        
      
         OriResult(itr0,itr1) = value;
+        OriConfiResult(itr0,itr1)=confidence;
         OriRTResult(itr0,itr1) = RT;  
         OriFTResult(itr0,itr1) = FT;  
         OriStampButton = [OriStampButton;TrialNum,RespTime,firstResp,finish,RT,FT,RespAng];        
@@ -126,6 +130,6 @@ cd(savePath);
 
 logfn = ['Ori_',num2str(SubjID),'_',num2str(PosID),'_',num2str(tmpTime(1)),...
     fnTime{1},fnTime{2},'_',fnTime{3},fnTime{4},fnTime{5},'.mat'];
-save(logfn, 'SubjID','OriStampCue','OriStampButton','OriResult','OriRTResult','OriFTResult');
+save(logfn, 'SubjID','OriStampCue','OriStampButton','OriResult','OriRTResult','OriFTResult','OriConfiResult');
 cd(tempPath);
 clear
