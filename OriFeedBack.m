@@ -9,6 +9,7 @@ if value > 90
 elseif value < -90
     value = round(value + 180);
 end
+confidence=0;
 if finish == 1   
 
     DrawFormattedText(wPtr,'对答案确定吗','center',rect(4)/2-150,white);
